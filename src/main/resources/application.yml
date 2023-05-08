@@ -6,3 +6,14 @@ spring:
     password: 1347477532
 server:
   port: 8081
+  
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    
+    
+ImagesFilePath: D://IT_Project/项目/nCoV_management/ncov_m/src/assets/images/
