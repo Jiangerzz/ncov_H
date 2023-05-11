@@ -9,20 +9,22 @@ import com.example.ncov_h.controller.dto.LoginDTO;
 import com.example.ncov_h.controller.dto.StuInfoDTO;
 import com.example.ncov_h.controller.dto.TcInfoDTO;
 import com.example.ncov_h.controller.request.UserRequest;
+import com.example.ncov_h.entity.Menu;
 import com.example.ncov_h.entity.StudentInfo;
 import com.example.ncov_h.entity.TeacherInfo;
 import com.example.ncov_h.entity.User;
 import com.example.ncov_h.exception.ServiceException;
+import com.example.ncov_h.mapper.RoleMapper;
+import com.example.ncov_h.mapper.RoleMenuMapper;
 import com.example.ncov_h.mapper.UserMapper;
+import com.example.ncov_h.service.MenuService;
 import com.example.ncov_h.service.UserService;
 import com.example.ncov_h.util.TokenUtils;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.awt.print.Book;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,6 +32,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     
     @Autowired
     private UserMapper userMapper;
+    
+    @Autowired
+    private RoleMenuMapper roleMenuMapper;
+    
+    @Autowired
+    private RoleMapper roleMapper;
+    
+    @Autowired
+    private MenuService menuService;
 
     /**
      * 登录方法
@@ -60,6 +71,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
             }else if ("3".equals(one.getRoleId())){
                 userDto.setName(userMapper.getTcNameById(one.getUsername()));
             }
+            String roleId = one.getRoleId();
+            List<Menu> MenuIds = getRoleMenus(roleId);
+            userDto.setMenus(MenuIds);
             return userDto;
         }else{
             throw new ServiceException(Constants.CODE_600,"用户名或密码错误");
@@ -163,5 +177,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         }else {
             return Result.error("更新失败!");
         }
+    }
+
+    private List<Menu> getRoleMenus(String roleId) {
+        // 当前角色的所有菜单id集合
+        List<Integer> menuIds = roleMenuMapper.selectByRoleId(roleId);
+
+        // 查出系统所有的菜单(树形)
+        List<Menu> menus = menuService.findMenus("");
+        // new一个最后筛选完成之后的list
+        List<Menu> roleMenus = new ArrayList<>();
+        // 筛选当前用户角色的菜单
+        for (Menu menu : menus) {
+            if (menuIds.contains(menu.getId())) {
+                roleMenus.add(menu);
+            }
+            List<Menu> children = menu.getChildren();
+            // removeIf()  移除 children 里面不在 menuIds集合中的 元素
+            children.removeIf(child -> !menuIds.contains(child.getId()));
+        }
+        return roleMenus;
     }
 }

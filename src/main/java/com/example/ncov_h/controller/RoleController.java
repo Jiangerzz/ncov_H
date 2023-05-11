@@ -60,7 +60,7 @@ public class RoleController {
     }
 
     @GetMapping("/roleMenu/{roleId}")
-    public Result getRoleMenu(@PathVariable Integer roleId) {
+    public Result getRoleMenu(@PathVariable String roleId) {
         return Result.success( roleService.getRoleMenu(roleId));
     }
     

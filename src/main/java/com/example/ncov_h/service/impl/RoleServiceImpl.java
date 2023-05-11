@@ -98,7 +98,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
 
     @Override
-    public List<Integer> getRoleMenu(Integer roleId) {
+    public List<Integer> getRoleMenu(String roleId) {
 
         return roleMenuMapper.selectByRoleId(roleId);
     }

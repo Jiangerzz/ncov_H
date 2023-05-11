@@ -20,7 +20,7 @@ public interface QingjiaMapper {
     @Insert("insert into t_wcqj(username,name,qjsy,spzt,kssj,jssj,czsj) values(#{username},#{name},#{qjsy},#{spzt},#{kssj},#{jssj},#{czsj})")
     Integer addQingjia(Qingjia qingjia);
     
-    @Update("update t_wcqj set kssj = #{kssj},jssj = #{jssj},czsj = #{czsj},qjsy = #{qjsy}")
+    @Update("update t_wcqj set kssj = #{kssj},jssj = #{jssj},czsj = #{czsj},qjsy = #{qjsy} where id = #{id}")
     Integer updateQingjia(Qingjia qingjia);
     
     @Delete("delete from t_wcqj where id = #{id}")

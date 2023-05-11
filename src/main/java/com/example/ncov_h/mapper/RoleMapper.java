@@ -3,10 +3,7 @@ package com.example.ncov_h.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.ncov_h.entity.Role;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -30,5 +27,7 @@ public interface RoleMapper extends BaseMapper<Role> {
     
     @Update("update t_role set name = #{name}, flag = #{flag} where id = #{id}")
     Integer update(Role role);
-    
+
+    @Select("select id from t_role where flag = #{flag}")
+    Integer selectByFlag(@Param("flag") String flag);
 }

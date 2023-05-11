@@ -57,13 +57,17 @@ public class QingjiaServiceImpl implements QingjiaService {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sDate = simpleDateFormat.format(new Date());
         try{
-            date = simpleDateFormat.parse(sDate);
-            qingjia.setCzsj(date);
-            Integer count = qingjiaMapper.updateQingjia(qingjia);
-            if(count > 0){
-                return Result.success();
+            if("1".equals(qingjia.getSpzt())) {
+                date = simpleDateFormat.parse(sDate);
+                qingjia.setCzsj(date);
+                Integer count = qingjiaMapper.updateQingjia(qingjia);
+                if (count > 0) {
+                    return Result.success();
+                } else {
+                    return Result.error("修改失败!");
+                }
             }else {
-                return Result.error("修改失败!");
+                return Result.error("不可修改");
             }
         }catch (Exception e){
             throw new ServiceException("修改异常，请联系管理员!");
