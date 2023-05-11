@@ -24,6 +24,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +51,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
      */
     @Override
     public LoginDTO login(User user) {
+        String password = user.getPassword();
+        //md5加密
+        password = DigestUtils.md5DigestAsHex(password.getBytes());
+        System.out.println(password);
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username",user.getUsername());
-        queryWrapper.eq("password",user.getPassword());
+        queryWrapper.eq("password",password);
+        
         User one;
         try{
             one = getOne(queryWrapper);
@@ -161,6 +168,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
 
     @Override
     public Result insertUser(User user) {
+        //md5加密
+        String password = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
+        user.setPassword(password);
         int count = userMapper.insert(user);
         if(count > 0) {
             return Result.success();
